@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MovieCard } from '../movie-card/movie-card'
 
-export const MainView = ({ user }) => {
+export const MainView = ({ user, onAddFavorite, onRemoveFavorite }) => {
     const [movies, setMovies] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -45,11 +45,18 @@ export const MainView = ({ user }) => {
     }
 
     return (
-        <div className="main-view">
-            <h1>Welcome, {user?.username}!</h1>
-            <div className="movies-grid">
+        <div className="container py-4">
+            <h1 className="mb-4">Welcome, {user?.username}!</h1>
+            <div className="row g-3">
                 {movies.map((movie) => (
-                    <MovieCard key={movie._id} movie={movie} />
+                    <div key={movie._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <MovieCard
+                            movie={movie}
+                            user={user}
+                            onAddFavorite={onAddFavorite}
+                            onRemoveFavorite={onRemoveFavorite}
+                        />
+                    </div>
                 ))}
             </div>
         </div>

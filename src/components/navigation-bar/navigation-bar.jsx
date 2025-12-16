@@ -10,22 +10,20 @@ export const NavigationBar = ({ user, onLogout }) => {
     }
 
     return (
-        <nav className="navigation-bar">
-            <div className="nav-brand">
-                <Link to="/">MyFlix</Link>
-            </div>
-            <div className="nav-links">
+        <nav className="navbar navbar-expand navbar-dark bg-dark px-3">
+            <Link className="navbar-brand" to="/">MyFlix</Link>
+            <div className="ms-auto d-flex align-items-center gap-3">
                 {!user ? (
                     <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/signup">Sign Up</Link>
+                        <Link className="nav-link" to="/login">Login</Link>
+                        <Link className="btn btn-outline-light btn-sm" to="/signup">Sign Up</Link>
                     </>
                 ) : (
                     <>
-                        <Link to="/">Home</Link>
-                        <Link to="/profile">Profile</Link>
-                        <span className="user-greeting">Welcome, {user.username}</span>
-                        <button onClick={handleLogout} className="logout-btn">
+                        <Link className="nav-link" to="/">Home</Link>
+                        <Link className="nav-link" to="/profile">Profile</Link>
+                        <span className="text-light">Welcome, {user.username}</span>
+                        <button onClick={handleLogout} className="btn btn-danger btn-sm">
                             Logout
                         </button>
                     </>

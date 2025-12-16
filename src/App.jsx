@@ -6,6 +6,7 @@ import { SignupView } from './components/signup-view/signup-view'
 import { MainView } from './components/main-view/main-view'
 import { MovieView } from './components/movie-view/movie-view'
 import { ProfileView } from './components/profile-view/profile-view'
+import { getUsers, getMovies, updateUser, deleteUser, addFavorite, removeFavorite, login as apiLogin, signup as apiSignup } from './api'
 
 // Mock movies data
 const mockMovies = [
@@ -40,7 +41,7 @@ const mockMovies = [
 
 export default function App() {
     const [user, setUser] = useState(null)
-    const [movies] = useState(mockMovies)
+    const [movies, setMovies] = useState(mockMovies)
 
     // Load user from localStorage on mount
     useEffect(() => {
@@ -50,22 +51,34 @@ export default function App() {
         }
     }, [])
 
-    const handleLogin = (userData) => {
-        const newUser = {
-            ...userData,
-            favoriteMovies: [],
+    const handleLogin = async (userData) => {
+        try {
+            // If you have an API, uncomment next line and remove mock
+            // const { token, user: apiUser } = await apiLogin(userData)
+            // const newUser = { ...apiUser, token }
+            const newUser = { ...userData, favoriteMovies: [], token: 'mock-token-' + Date.now() }
+            setUser(newUser)
+            localStorage.setItem('user', JSON.stringify(newUser))
+            // Optionally load movies from API
+            // const moviesData = await getMovies(newUser.token)
+            // setMovies(moviesData)
+        } catch (err) {
+            console.error(err)
+            alert('Login failed')
         }
-        setUser(newUser)
-        localStorage.setItem('user', JSON.stringify(newUser))
     }
 
-    const handleSignup = (userData) => {
-        const newUser = {
-            ...userData,
-            favoriteMovies: [],
+    const handleSignup = async (userData) => {
+        try {
+            // If you have an API, uncomment next line and remove mock
+            // const created = await apiSignup(userData)
+            const newUser = { ...userData, favoriteMovies: [], token: 'mock-token-' + Date.now() }
+            setUser(newUser)
+            localStorage.setItem('user', JSON.stringify(newUser))
+        } catch (err) {
+            console.error(err)
+            alert('Signup failed')
         }
-        setUser(newUser)
-        localStorage.setItem('user', JSON.stringify(newUser))
     }
 
     const handleLogout = () => {
@@ -73,31 +86,54 @@ export default function App() {
         localStorage.removeItem('user')
     }
 
-    const handleUpdateProfile = (updatedData) => {
-        const updatedUser = { ...user, ...updatedData }
-        setUser(updatedUser)
-        localStorage.setItem('user', JSON.stringify(updatedUser))
-    }
-
-    const handleAddFavorite = (movieId) => {
-        if (user && !user.favoriteMovies.includes(movieId)) {
-            const updatedUser = {
-                ...user,
-                favoriteMovies: [...user.favoriteMovies, movieId],
-            }
+    const handleUpdateProfile = async (updatedData) => {
+        try {
+            // const saved = await updateUser(user.username, updatedData, user.token)
+            const updatedUser = { ...user, ...updatedData }
             setUser(updatedUser)
             localStorage.setItem('user', JSON.stringify(updatedUser))
+        } catch (err) {
+            console.error(err)
+            alert('Update failed')
         }
     }
 
-    const handleRemoveFavorite = (movieId) => {
-        if (user) {
-            const updatedUser = {
-                ...user,
-                favoriteMovies: user.favoriteMovies.filter((id) => id !== movieId),
+    const handleAddFavorite = async (movieId) => {
+        if (!user) return
+        try {
+            // await addFavorite(user.username, movieId, user.token)
+            if (!user.favoriteMovies.includes(movieId)) {
+                const updatedUser = { ...user, favoriteMovies: [...user.favoriteMovies, movieId] }
+                setUser(updatedUser)
+                localStorage.setItem('user', JSON.stringify(updatedUser))
             }
+        } catch (err) {
+            console.error(err)
+            alert('Failed to add favorite')
+        }
+    }
+
+    const handleRemoveFavorite = async (movieId) => {
+        if (!user) return
+        try {
+            // await removeFavorite(user.username, movieId, user.token)
+            const updatedUser = { ...user, favoriteMovies: user.favoriteMovies.filter((id) => id !== movieId) }
             setUser(updatedUser)
             localStorage.setItem('user', JSON.stringify(updatedUser))
+        } catch (err) {
+            console.error(err)
+            alert('Failed to remove favorite')
+        }
+    }
+
+    const handleDeregister = async () => {
+        try {
+            // await deleteUser(user.username, user.token)
+            setUser(null)
+            localStorage.removeItem('user')
+        } catch (err) {
+            console.error(err)
+            alert('Failed to deregister')
         }
     }
 
@@ -118,7 +154,17 @@ export default function App() {
                 {/* Protected Routes */}
                 <Route
                     path="/"
-                    element={user ? <MainView user={user} /> : <Navigate to="/login" />}
+                    element={
+                        user ? (
+                            <MainView
+                                user={user}
+                                onAddFavorite={handleAddFavorite}
+                                onRemoveFavorite={handleRemoveFavorite}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
                 />
                 <Route
                     path="/movies/:movieId"
@@ -141,8 +187,10 @@ export default function App() {
                         user ? (
                             <ProfileView
                                 user={user}
+                                movies={movies}
                                 onUpdateProfile={handleUpdateProfile}
                                 onRemoveFavorite={handleRemoveFavorite}
+                                onDeregister={handleDeregister}
                             />
                         ) : (
                             <Navigate to="/login" />
