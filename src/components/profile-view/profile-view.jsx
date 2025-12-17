@@ -86,17 +86,27 @@ export const ProfileView = ({ user, movies = [], onUpdateProfile, onRemoveFavori
             <div className="profile-section">
                 <h3>Favorite Movies</h3>
                 {favoriteMovies.length > 0 ? (
-                    <div className="row g-3">
+                    <div className="profile-favorites">
                         {favoriteMovies.map((movie) => (
-                            <div key={movie._id} className="col-12 col-sm-6 col-md-4">
-                                <div className="card h-100">
-                                    <img src={movie.imagePath} alt={movie.title} className="card-img-top" />
-                                    <div className="card-body">
-                                        <h5 className="card-title">{movie.title}</h5>
-                                        <p className="card-text">{movie.description}</p>
+                            <div key={movie._id} className="profile-favorite-item">
+                                <div className="movie-card">
+                                    <img
+                                        src={movie.imagePath}
+                                        alt={movie.title}
+                                        className="card-img-top"
+                                    />
+                                    <div className="movie-body">
+                                        <h5 className="movie-title">{movie.title}</h5>
+                                        <p className="movie-text">{movie.description}</p>
                                     </div>
-                                    <div className="card-footer">
-                                        <button className="btn btn-outline-danger btn-sm" onClick={() => onRemoveFavorite(movie._id)}>Remove</button>
+                                    <div className="movie-footer d-flex justify-content-between align-items-center">
+                                        <span className="badge bg-secondary">{movie.genre?.name}</span>
+                                        <button
+                                            className="btn btn-outline-danger btn-sm"
+                                            onClick={() => onRemoveFavorite(movie._id)}
+                                        >
+                                            Remove
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -1,31 +1,22 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import './navigation-bar.scss'
 
 export const NavigationBar = ({ user, onLogout }) => {
-    const navigate = useNavigate()
-
-    const handleLogout = () => {
-        onLogout()
-        navigate('/login')
-    }
-
     return (
-        <nav className="navbar navbar-expand navbar-dark bg-dark px-3">
-            <Link className="navbar-brand" to="/">MyFlix</Link>
-            <div className="ms-auto d-flex align-items-center gap-3">
+        <nav className="navbar diagonal">
+            <Link to="/" className="nav-logo">myFlix</Link>
+            <div className="nav-links">
                 {!user ? (
                     <>
-                        <Link className="nav-link" to="/login">Login</Link>
-                        <Link className="btn btn-outline-light btn-sm" to="/signup">Sign Up</Link>
+                        <Link to="/login">Login</Link>
+                        <Link to="/signup">Signup</Link>
                     </>
                 ) : (
                     <>
-                        <Link className="nav-link" to="/">Home</Link>
-                        <Link className="nav-link" to="/profile">Profile</Link>
-                        <span className="text-light">Welcome, {user.username}</span>
-                        <button onClick={handleLogout} className="btn btn-danger btn-sm">
-                            Logout
-                        </button>
+                        <Link to="/">Home</Link>
+                        <Link to="/profile">Profile</Link>
+                        <button onClick={onLogout}>Logout</button>
                     </>
                 )}
             </div>

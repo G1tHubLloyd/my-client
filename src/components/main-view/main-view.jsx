@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { MovieCard } from '../movie-card/movie-card'
 
-export const MainView = ({ user, onAddFavorite, onRemoveFavorite }) => {
-    const [movies, setMovies] = useState([])
+export const MainView = ({ user, movies, onAddFavorite, onRemoveFavorite }) => {
+    const [localMovies, setLocalMovies] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -36,27 +36,31 @@ export const MainView = ({ user, onAddFavorite, onRemoveFavorite }) => {
                 releaseDate: '2008-07-18',
             },
         ]
-        setMovies(mockMovies)
+        // Only use local mock if no movies were provided as a prop
+        if (!movies || movies.length === 0) {
+            setLocalMovies(mockMovies)
+        }
         setLoading(false)
-    }, [])
+    }, [movies])
 
     if (loading) {
         return <div className="main-view"><p>Loading movies...</p></div>
     }
 
+    const list = movies && movies.length > 0 ? movies : localMovies
+
     return (
         <div className="container py-4">
             <h1 className="mb-4">Welcome, {user?.username}!</h1>
-            <div className="row g-3">
-                {movies.map((movie) => (
-                    <div key={movie._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <MovieCard
-                            movie={movie}
-                            user={user}
-                            onAddFavorite={onAddFavorite}
-                            onRemoveFavorite={onRemoveFavorite}
-                        />
-                    </div>
+            <div className="movies-list">
+                {list.map((movie) => (
+                    <MovieCard
+                        key={movie._id}
+                        movie={movie}
+                        user={user}
+                        onAddFavorite={onAddFavorite}
+                        onRemoveFavorite={onRemoveFavorite}
+                    />
                 ))}
             </div>
         </div>

@@ -10,15 +10,15 @@ export const MovieCard = ({ movie, user, onAddFavorite, onRemoveFavorite }) => {
     }
 
     return (
-        <div className="card h-100 shadow-sm">
+        <div className="movie-card">
             <Link to={`/movies/${movie._id}`} className="text-decoration-none text-dark">
                 <img src={movie.imagePath} alt={movie.title} className="card-img-top" />
-                <div className="card-body">
-                    <h5 className="card-title">{movie.title}</h5>
-                    <p className="card-text">{movie.description}</p>
+                <div className="movie-body">
+                    <h5 className="movie-title">{movie.title}</h5>
+                    <p className="movie-text">{movie.description}</p>
                 </div>
             </Link>
-            <div className="card-footer d-flex justify-content-between align-items-center">
+            <div className="movie-footer d-flex justify-content-between align-items-center">
                 <span className="badge bg-secondary">{movie.genre?.name}</span>
                 {user && (
                     <button className={`btn btn-sm ${isFavorite ? 'btn-outline-danger' : 'btn-outline-primary'}`} onClick={handleToggle}>

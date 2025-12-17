@@ -43,11 +43,42 @@ export default function App() {
     const [user, setUser] = useState(null)
     const [movies, setMovies] = useState(mockMovies)
 
-    // Load user from localStorage on mount
+    // Local favorites persistence helpers (declared before useEffect)
+    const favKey = (username) => `favorites:${username}`
+    const loadFavorites = (username) => {
+        try {
+            const raw = localStorage.getItem(favKey(username))
+            return raw ? JSON.parse(raw) : []
+        } catch {
+            return []
+        }
+    }
+    const saveFavorites = (username, ids) => {
+        try {
+            localStorage.setItem(favKey(username), JSON.stringify(ids))
+        } catch { }
+    }
+
+    // Load user and migrate favorites on mount
     useEffect(() => {
-        const savedUser = localStorage.getItem('user')
-        if (savedUser) {
-            setUser(JSON.parse(savedUser))
+        const raw = localStorage.getItem('user')
+        if (!raw) return
+        try {
+            const saved = JSON.parse(raw)
+            if (!saved?.username) {
+                setUser(saved)
+                return
+            }
+            let favorites = loadFavorites(saved.username)
+            if ((!favorites || favorites.length === 0) && Array.isArray(saved.favoriteMovies) && saved.favoriteMovies.length > 0) {
+                favorites = saved.favoriteMovies
+                saveFavorites(saved.username, favorites)
+            }
+            const mergedUser = { ...saved, favoriteMovies: favorites || [] }
+            setUser(mergedUser)
+            localStorage.setItem('user', JSON.stringify(mergedUser))
+        } catch {
+            // if parsing fails, ignore and start fresh
         }
     }, [])
 
@@ -56,7 +87,8 @@ export default function App() {
             // If you have an API, uncomment next line and remove mock
             // const { token, user: apiUser } = await apiLogin(userData)
             // const newUser = { ...apiUser, token }
-            const newUser = { ...userData, favoriteMovies: [], token: 'mock-token-' + Date.now() }
+            const existingFavs = userData?.username ? loadFavorites(userData.username) : []
+            const newUser = { ...userData, favoriteMovies: existingFavs, token: 'mock-token-' + Date.now() }
             setUser(newUser)
             localStorage.setItem('user', JSON.stringify(newUser))
             // Optionally load movies from API
@@ -103,9 +135,11 @@ export default function App() {
         try {
             // await addFavorite(user.username, movieId, user.token)
             if (!user.favoriteMovies.includes(movieId)) {
-                const updatedUser = { ...user, favoriteMovies: [...user.favoriteMovies, movieId] }
+                const updatedFavs = [...user.favoriteMovies, movieId]
+                const updatedUser = { ...user, favoriteMovies: updatedFavs }
                 setUser(updatedUser)
                 localStorage.setItem('user', JSON.stringify(updatedUser))
+                if (user.username) saveFavorites(user.username, updatedFavs)
             }
         } catch (err) {
             console.error(err)
@@ -117,9 +151,11 @@ export default function App() {
         if (!user) return
         try {
             // await removeFavorite(user.username, movieId, user.token)
-            const updatedUser = { ...user, favoriteMovies: user.favoriteMovies.filter((id) => id !== movieId) }
+            const updatedFavs = user.favoriteMovies.filter((id) => id !== movieId)
+            const updatedUser = { ...user, favoriteMovies: updatedFavs }
             setUser(updatedUser)
             localStorage.setItem('user', JSON.stringify(updatedUser))
+            if (user.username) saveFavorites(user.username, updatedFavs)
         } catch (err) {
             console.error(err)
             alert('Failed to remove favorite')
@@ -129,6 +165,10 @@ export default function App() {
     const handleDeregister = async () => {
         try {
             // await deleteUser(user.username, user.token)
+            // Clear local favorites for this user on deregister
+            if (user?.username) {
+                try { localStorage.removeItem(favKey(user.username)) } catch { }
+            }
             setUser(null)
             localStorage.removeItem('user')
         } catch (err) {
@@ -158,6 +198,7 @@ export default function App() {
                         user ? (
                             <MainView
                                 user={user}
+                                movies={movies}
                                 onAddFavorite={handleAddFavorite}
                                 onRemoveFavorite={handleRemoveFavorite}
                             />
