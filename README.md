@@ -69,13 +69,14 @@ my-client
 - If you only use `react-router-dom`, you can remove `react-router` from dependencies.
 - Favorites persistence: stored per user in `localStorage` under `favorites:<username>` and loaded on login.
 - Movie card images use `object-fit: contain` with a max height to show full posters.
+- Diagonal navbar with modern hover effects
 
 ## Git
 - Work happens on branch `routing-refactor`.
 - Do not commit `node_modules/` or `dist/`.
 
 ## Troubleshooting
-- If `npm run dev` doesn’t start, ensure you’re in the project folder and port 5173 isn’t occupied. Vite will auto-select another port.
+- If `npm run dev` doesn't start, ensure you're in the project folder and port 5173 isn't occupied. Vite will auto-select another port.
 - If you see an "Unexpected keyword 'export'" error, ensure `export default function App()` is outside any object/array and at top-level.
 
 ## Next Steps
