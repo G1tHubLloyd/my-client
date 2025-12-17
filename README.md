@@ -7,7 +7,7 @@ A React single-page application scaffolded with Vite. Implements state-based rou
 ```bash
 # from the project root
 npm install
-npm run dev
+npm run dev -- --port 5177 --host
 # build & preview
 npm run build
 npm run preview
@@ -46,10 +46,11 @@ my-client
 ## Features
 - Routing with protected routes (redirect unauthenticated users)
 - Login & Signup (mocked, persisted in `localStorage`)
-- Navigation bar with conditional links
+- Navigation bar with conditional links and diagonal styling
 - Home lists movies (mock data)
 - Movie details page with favorite toggle
-- Profile page: edit email/birthday, list/remove favorites
+- Profile page: edit email/birthday, list/remove favorites; favorites now persist per user across logout via `localStorage` key `favorites:<username>`
+- Profile favorites display horizontally with scroll + snap
 
 ## Routing
 - `/login` — public; redirects to `/` if authenticated
@@ -66,6 +67,8 @@ my-client
 - Movie images currently use public poster URLs.
 - Replace mock data in `src/App.jsx` and `src/components/main-view/main-view.jsx` with API calls later.
 - If you only use `react-router-dom`, you can remove `react-router` from dependencies.
+- Favorites persistence: stored per user in `localStorage` under `favorites:<username>` and loaded on login.
+- Movie card images use `object-fit: contain` with a max height to show full posters.
 
 ## Git
 - Work happens on branch `routing-refactor`.
