@@ -31,58 +31,74 @@ export const SignupView = ({ onSignup }) => {
     }
 
     return (
-        <div className="signup-view">
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSignup}>
-                <div>
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Choose a username"
-                        />
-                    </label>
+        <div className="container py-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6 col-lg-5">
+                    <div className="card shadow">
+                        <div className="card-body">
+                            <h2 className="card-title text-center mb-4">Sign Up</h2>
+                            <form onSubmit={handleSignup}>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">
+                                        Username
+                                    </label>
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        className="form-control"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Choose a username"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">
+                                        Email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        className="form-control"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label">
+                                        Password
+                                    </label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Create a password"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="birthday" className="form-label">
+                                        Birthday (optional)
+                                    </label>
+                                    <input
+                                        id="birthday"
+                                        type="date"
+                                        className="form-control"
+                                        value={birthday}
+                                        onChange={(e) => setBirthday(e.target.value)}
+                                    />
+                                </div>
+                                {error && <div className="alert alert-danger" role="alert">{error}</div>}
+                                <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+                            </form>
+                            <p className="text-center mt-3 mb-0">
+                                Already have an account? <Link to="/login">Login here</Link>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>
-                        Email:
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email"
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Password:
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Create a password"
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Birthday (optional):
-                        <input
-                            type="date"
-                            value={birthday}
-                            onChange={(e) => setBirthday(e.target.value)}
-                        />
-                    </label>
-                </div>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">Sign Up</button>
-            </form>
-            <p>
-                Already have an account? <Link to="/login">Login here</Link>
-            </p>
+            </div>
         </div>
     )
 }

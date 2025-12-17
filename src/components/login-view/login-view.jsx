@@ -27,37 +27,49 @@ export const LoginView = ({ onLogin }) => {
     }
 
     return (
-        <div className="login-view">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Enter your username"
-                        />
-                    </label>
+        <div className="container py-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6 col-lg-4">
+                    <div className="card shadow">
+                        <div className="card-body">
+                            <h2 className="card-title text-center mb-4">Login</h2>
+                            <form onSubmit={handleLogin}>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">
+                                        Username
+                                    </label>
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        className="form-control"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Enter your username"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label">
+                                        Password
+                                    </label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Enter your password"
+                                    />
+                                </div>
+                                {error && <div className="alert alert-danger" role="alert">{error}</div>}
+                                <button type="submit" className="btn btn-primary w-100">Login</button>
+                            </form>
+                            <p className="text-center mt-3 mb-0">
+                                Don't have an account? <Link to="/signup">Sign up here</Link>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>
-                        Password:
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
-                        />
-                    </label>
-                </div>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">Login</button>
-            </form>
-            <p>
-                Don't have an account? <Link to="/signup">Sign up here</Link>
-            </p>
+            </div>
         </div>
     )
 }
