@@ -5,11 +5,20 @@ A React single-page application scaffolded with Vite. Implements state-based rou
 ## Quick Start
 
 ```bash
-# from the project root
+# Install dependencies
 npm install
-npm run dev -- --port 5177 --host
-# build & preview
+
+# Create environment file
+cp .env.example .env
+# Edit .env and set VITE_API_BASE_URL to your API endpoint
+
+# Start development server
+npm run dev
+
+# Build for production
 npm run build
+
+# Preview production build
 npm run preview
 ```
 
@@ -44,13 +53,19 @@ my-client
 ```
 
 ## Features
-- Routing with protected routes (redirect unauthenticated users)
-- Login & Signup (mocked, persisted in `localStorage`)
-- Navigation bar with conditional links and diagonal styling
-- Home lists movies (mock data)
-- Movie details page with favorite toggle
-- Profile page: edit email/birthday, list/remove favorites; favorites now persist per user across logout via `localStorage` key `favorites:<username>`
-- Profile favorites display horizontally with scroll + snap
+- **Authentication**: Login & Signup with JWT tokens
+- **Routing**: React Router with protected routes (redirect unauthenticated users)
+- **Navigation Bar**: Conditional links based on auth status, modern diagonal styling
+- **Movie Browsing**: Home page lists all movies from API
+- **Movie Details**: Dedicated page for each movie with full information
+- **Favorites**: Add/remove movies to favorites (synced with backend)
+- **Profile Management**: 
+  - View user information
+  - Edit email, birthday, and password
+  - Delete account (deregister)
+  - View and manage favorite movies list
+- **Persistent Sessions**: User auth and favorites stored in localStorage
+- **Responsive Design**: Bootstrap 5 styling throughout
 
 ## Routing
 - `/login` — public; redirects to `/` if authenticated
@@ -64,22 +79,30 @@ my-client
 - SCSS entry `src/index.scss` loaded from `src/index.jsx`.
 
 ## Development Notes
-- Movie images currently use public poster URLs.
-- Replace mock data in `src/App.jsx` and `src/components/main-view/main-view.jsx` with API calls later.
-- If you only use `react-router-dom`, you can remove `react-router` from dependencies.
-- Favorites persistence: stored per user in `localStorage` under `favorites:<username>` and loaded on login.
-- Movie card images use `object-fit: contain` with a max height to show full posters.
-- Diagonal navbar with modern hover effects
+- Ensure the backend API is running before starting the client
+- API calls are made to the URL specified in `VITE_API_BASE_URL` environment variable
+- Movies, users, and favorites are stored in MongoDB via the API
+- Authentication uses JWT tokens stored in localStorage
+- The app uses React Router v7 for client-side routing
+- Bootstrap 5 is used for styling
+
+## API Endpoints Used
+- `POST /login` - Authenticate user
+- `POST /users` - Register new user
+- `GET /users/:username` - Get user profile
+- `PUT /users/:username` - Update user profile
+- `DELETE /users/:username` - Delete user account
+- `GET /movies` - Get all movies
+- `POST /users/:username/movies/:movieId` - Add movie to favorites
+- `DELETE /users/:username/movies/:movieId` - Remove movie from favorites
 
 ## Git
-- Work happens on branch `routing-refactor`.
-- Do not commit `node_modules/` or `dist/`.
-
-## Troubleshooting
-- If `npm run dev` doesn't start, ensure you're in the project folder and port 5173 isn't occupied. Vite will auto-select another port.
-- If you see an "Unexpected keyword 'export'" error, ensure `export default function App()` is outside any object/array and at top-level.
+- Main development branch: `main`
+- Create feature branches for new work
+- Ensure `.gitignore` excludes `node_modules/`, `dist/`, and `.env`
 
 ## Next Steps
-- Integrate real backend API for movies and auth.
-- Add ESLint/Prettier.
-- Optionally migrate to TypeScript.
+- Ensure backend API is running and accessible
+- Seed database with movie data
+- Test all features end-to-end
+- Deploy to production (consider Netlify for client, Render/Railway for API)

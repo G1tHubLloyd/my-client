@@ -7,9 +7,10 @@ export const SignupView = ({ onSignup }) => {
     const [email, setEmail] = useState('')
     const [birthday, setBirthday] = useState('')
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault()
 
         if (!username || !password || !email) {
@@ -17,17 +18,17 @@ export const SignupView = ({ onSignup }) => {
             return
         }
 
-        // Call parent onSignup function with user data
-        onSignup({
-            username,
-            password,
-            email,
-            birthday,
-            token: 'mock-token-' + Date.now(),
-        })
-
-        setError('')
-        navigate('/')
+        try {
+            setLoading(true)
+            setError('')
+            await onSignup({ username, password, email, birthday })
+            navigate('/')
+        } catch (err) {
+            console.error(err)
+            setError('Signup failed')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -90,7 +91,9 @@ export const SignupView = ({ onSignup }) => {
                                     />
                                 </div>
                                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
-                                <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+                                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                                    {loading ? 'Signing up...' : 'Sign Up'}
+                                </button>
                             </form>
                             <p className="text-center mt-3 mb-0">
                                 Already have an account? <Link to="/login">Login here</Link>

@@ -5,9 +5,10 @@ export const LoginView = ({ onLogin }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault()
 
         if (!username || !password) {
@@ -15,15 +16,17 @@ export const LoginView = ({ onLogin }) => {
             return
         }
 
-        // Call parent onLogin function with user data
-        onLogin({
-            username,
-            // In a real app, you'd receive a token from your API
-            token: 'mock-token-' + Date.now(),
-        })
-
-        setError('')
-        navigate('/')
+        try {
+            setLoading(true)
+            setError('')
+            await onLogin({ username, password })
+            navigate('/')
+        } catch (err) {
+            console.error(err)
+            setError('Login failed')
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -61,7 +64,9 @@ export const LoginView = ({ onLogin }) => {
                                     />
                                 </div>
                                 {error && <div className="alert alert-danger" role="alert">{error}</div>}
-                                <button type="submit" className="btn btn-primary w-100">Login</button>
+                                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                                    {loading ? 'Logging in...' : 'Login'}
+                                </button>
                             </form>
                             <p className="text-center mt-3 mb-0">
                                 Don't have an account? <Link to="/signup">Sign up here</Link>
