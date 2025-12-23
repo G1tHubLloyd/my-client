@@ -52,6 +52,7 @@ export default function App() {
         setMoviesError('')
         try {
             const data = await getMovies(token)
+            console.log('Received movies:', data.slice(0, 2).map(m => ({ title: m.title, imagePath: m.imagePath })))
             setMovies(data)
         } catch (err) {
             setMoviesError('Failed to load movies')
