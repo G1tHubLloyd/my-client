@@ -10,9 +10,9 @@ npm install
 
 # Create environment file
 cp .env.example .env
-# Edit .env and set VITE_API_BASE_URL to your API endpoint
+# Edit .env and set VITE_API_BASE_URL to your API endpoint (local dev: http://localhost:5002)
 
-# Start development server
+# Start development server (Vite will choose 5173 or next open port)
 npm run dev
 
 # Build for production
