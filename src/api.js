@@ -55,7 +55,7 @@ export async function removeFavorite(username, movieId, token) {
 }
 
 export async function login({ username, password }) {
-    const res = await fetch(`${BASE_URL}/login`, {
+    const res = await fetch(`${BASE_URL}/auth/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -65,7 +65,7 @@ export async function login({ username, password }) {
 }
 
 export async function signup({ username, password, email, birthday }) {
-    const res = await fetch(`${BASE_URL}/users`, {
+    const res = await fetch(`${BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, email, birthday }),
